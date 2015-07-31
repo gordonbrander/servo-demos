@@ -1,3 +1,5 @@
+BABEL?=babel
+
 run:
 	python -m SimpleHTTPServer
 
@@ -5,7 +7,7 @@ install:
 	npm install --global babel
 
 build:
-	babel src --out-dir scripts
+	$(BABEL) src --out-dir scripts
 
 watch:
-	babel src --watch --out-dir scripts
+	$(BABEL) src --watch --out-dir scripts

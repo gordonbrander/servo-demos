@@ -22,4 +22,5 @@ body {
   width: 10px;
   height: 10px;
   position: absolute;
+  transition: left 31ms linear, top 31ms linear,
 }

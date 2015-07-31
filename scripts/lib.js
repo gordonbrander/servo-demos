@@ -6,6 +6,7 @@ var loop = function loop(callback) {
   var then = 0;
 
   var tick = function tick(t) {
+    if (t === null) t = Date.now();
     callback(frames, t, t - then);
     frames = frames + 1;
     then = t;

@@ -4,6 +4,8 @@ const loop = (callback) => {
   var then = 0;
 
   const tick = t => {
+    if (t === null)
+      t = Date.now();
     callback(frames, t, t - then);
     frames = frames + 1;
     then = t;

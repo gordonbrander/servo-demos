@@ -1,18 +1,30 @@
+const now = () => {
+  return 'performance' in window ? window.performance.now() : Date.now();
+}
+
+const smooth = (avg, curr, discount) =>
+  avg ? ((curr * discount) + (avg * (1.0 - discount))) : curr;
+
 const loop = (callback) => {
   var next = true;
-  var frames = 0;
-  var then = 0;
 
-  const tick = t => {
-    if (t === null)
-      t = Date.now();
-    callback(frames, t, t - then);
-    frames = frames + 1;
-    then = t;
-    if (next) requestAnimationFrame(tick);
-  }
+  requestAnimationFrame(() => {
+    var avgFps;
+    var frames = 1;
+    var prevT = now();
 
-  requestAnimationFrame(tick);
+    const tick = () => {
+      const currT = now();
+      const fps = 1000 / (currT - prevT);
+      avgFps = smooth(avgFps, fps, 0.03);
+      callback(frames, currT, prevT, Math.round(fps), Math.round(avgFps));
+      frames = frames + 1;
+      prevT = currT;
+      if (next) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  });
 
   return () => next = false;
 };

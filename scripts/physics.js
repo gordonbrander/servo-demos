@@ -81,18 +81,11 @@ events(containerEl, {
   }
 });
 
-var now = function now() {
-  return 'performance' in window ? window.performance.now() : Date.now();
-};
+loop(function (frames, currFrameT, prevFrameT, fps, averageFPS) {
+  // Advance physics simulation.
+  physics.step();
 
-var fpsSum = 0,
-    fpsCount = 0;
-var frameCount = 0;
-loop(function (frames, t, dt) {
-  if (frames++ % FRAMESKIP == 0) {
-    // Advance physics simulation.
-    physics.step();
-
+  if (frames % FRAMESKIP == 0) {
     physics.particles.forEach(function (particle) {
       pos2d(id(particle.id), particle.pos.x, particle.pos.y);
     });
@@ -100,9 +93,5 @@ loop(function (frames, t, dt) {
 
   // Calc delta between last and current frame start
   // + delta between frame start and frame end.
-  var fps = Math.round(1000 / (dt + (now() - t)));
-  fpsSum += fps;
-  fpsCount++;
-  var averageFPS = Math.round(fpsSum / fpsCount * 10.0) / 10.0;
   text(fpsEl, 'Current FPS: ' + fps + ' Average FPS: ' + averageFPS);
 });

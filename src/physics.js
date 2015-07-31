@@ -78,17 +78,11 @@ events(containerEl, {
   }
 });
 
-const now = () => {
-  return 'performance' in window ? window.performance.now() : Date.now();
-}
+loop((frames, currFrameT, prevFrameT, fps, averageFPS) => {
+  // Advance physics simulation.
+  physics.step();
 
-var fpsSum = 0, fpsCount = 0;
-var frameCount = 0;
-loop((frames, t, dt) => {
-  if (frames++ % FRAMESKIP == 0) {
-    // Advance physics simulation.
-    physics.step();
-
+  if (frames % FRAMESKIP == 0) {
     physics.particles.forEach(particle => {
       pos2d(id(particle.id), particle.pos.x, particle.pos.y);
     });
@@ -96,9 +90,5 @@ loop((frames, t, dt) => {
 
   // Calc delta between last and current frame start
   // + delta between frame start and frame end.
-  const fps = Math.round(1000 / (dt + (now() - t)));
-  fpsSum += fps;
-  fpsCount++;
-  const averageFPS = Math.round(fpsSum / fpsCount * 10.0) / 10.0;
   text(fpsEl, `Current FPS: ${fps} Average FPS: ${averageFPS}`);
 });

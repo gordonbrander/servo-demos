@@ -1,19 +1,33 @@
 'use strict';
 
+var now = function now() {
+  return 'performance' in window ? window.performance.now() : Date.now();
+};
+
+var smooth = function smooth(avg, curr, discount) {
+  return avg ? curr * discount + avg * (1.0 - discount) : curr;
+};
+
 var loop = function loop(callback) {
   var next = true;
-  var frames = 0;
-  var then = 0;
 
-  var tick = function tick(t) {
-    if (t === null) t = Date.now();
-    callback(frames, t, t - then);
-    frames = frames + 1;
-    then = t;
-    if (next) requestAnimationFrame(tick);
-  };
+  requestAnimationFrame(function () {
+    var avgFps;
+    var frames = 1;
+    var prevT = now();
 
-  requestAnimationFrame(tick);
+    var tick = function tick() {
+      var currT = now();
+      var fps = 1000 / (currT - prevT);
+      avgFps = smooth(avgFps, fps, 0.03);
+      callback(frames, currT, prevT, Math.round(fps), Math.round(avgFps));
+      frames = frames + 1;
+      prevT = currT;
+      if (next) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  });
 
   return function () {
     return next = false;

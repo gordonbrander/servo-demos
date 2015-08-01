@@ -1,7 +1,7 @@
 'use strict';
 
-var containerEl = id('container');
-var fpsEl = id('fps');
+var containerEl = byId('container');
+var fpsEl = byId('fps');
 
 var COLORS = {
   magenta: '#f27',
@@ -27,7 +27,7 @@ mouseRepulsion.strength = -1000;
 var mouseAttraction = new Attraction();
 mouseAttraction.strength = 200;
 
-var updateForce = function updateForce(x, y) {
+function updateForce(x, y) {
   mouseAttraction.target.x = x;
   mouseAttraction.target.y = y;
   mouseRepulsion.target.x = x;
@@ -35,7 +35,7 @@ var updateForce = function updateForce(x, y) {
 };
 
 // Create new particle element and particle object.
-var createParticle = function createParticle(x, y) {
+function createParticle(x, y) {
   var particle = new Particle(0.1);
   particle.setRadius(random(1, 5));
 
@@ -44,41 +44,44 @@ var createParticle = function createParticle(x, y) {
 
   particle.behaviours.push(mouseAttraction, mouseRepulsion);
 
-  // Init element with some basic styles.
-  var element = el(containerEl, 'div', particle.id, { particle: true });
-  style(element, {
-    background: getRandomValue(COLORS),
-    left: px(x),
-    top: px(y),
-    width: px(particle.radius * 2),
-    height: px(particle.radius * 2)
-  });
+  append(containerEl, el('div', {
+    id: particle.id,
+    className: 'particle',
+    style: {
+      background: getRandomValue(COLORS),
+      left: x + 'px',
+      top: y + 'px',
+      width: (particle.radius * 2) + 'px',
+      height: (particle.radius * 2) + 'px'
+    }
+  }));
 
   return particle;
 };
 
 // Create a bunch of particles
-var particles = times(NUM_PARTICLES, function (_) {
-  return createParticle(random(0, WIDTH - 10), random(0, HEIGHT - 10));
-});
-
-physics.particles = particles;
+for (var i = 0; i < NUM_PARTICLES; i++) {
+  physics.particles.push(createParticle(
+    random(0, WIDTH - 10),
+    random(0, HEIGHT - 10)
+  ));
+};
 
 // Set force to random location to begin with.
 updateForce(random(0, WIDTH - 10), random(0, HEIGHT - 10));
 
 // @note Servo does not bubble events or dispatch to `window` or `document` yet.
 // Set listeners directly on element (in this case, `containerEl`).
-events(containerEl, {
-  mousemove: function mousemove(event) {
-    updateForce(event.clientX, event.clientY);
-  },
-  mousedown: function mousedown(event) {
-    mouseRepulsion.setRadius(300);
-  },
-  mouseup: function mouseup(event) {
-    mouseRepulsion.setRadius(200);
-  }
+on(containerEl, 'mousemove', function (event) {
+  updateForce(event.clientX, event.clientY);
+});
+
+on(containerEl, 'mousedown', function (event) {
+  mouseRepulsion.setRadius(300);
+});
+
+on(containerEl, 'mouseup', function (event) {
+  mouseRepulsion.setRadius(200);
 });
 
 loop(function (frames, currFrameT, prevFrameT, fps, averageFPS) {
@@ -87,7 +90,12 @@ loop(function (frames, currFrameT, prevFrameT, fps, averageFPS) {
 
   if (frames % FRAMESKIP == 0) {
     physics.particles.forEach(function (particle) {
-      pos2d(id(particle.id), particle.pos.x, particle.pos.y);
+      edit(byId(particle.id), {
+        style: {
+          left: particle.pos.x + 'px',
+          top: particle.pos.y + 'px'
+        }
+      });
     });
   }
 

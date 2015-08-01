@@ -9,8 +9,6 @@ var COLORS = {
   blue: '#6de'
 };
 
-var FRAMESKIP = 2;
-
 // I guess we don't have window.innerWidth?
 var WIDTH = 1000;
 var HEIGHT = 1000;
@@ -88,16 +86,14 @@ loop(function (frames, currFrameT, prevFrameT, fps, averageFPS) {
   // Advance physics simulation.
   physics.step();
 
-  if (frames % FRAMESKIP == 0) {
-    physics.particles.forEach(function (particle) {
-      edit(byId(particle.id), {
-        style: {
-          left: particle.pos.x + 'px',
-          top: particle.pos.y + 'px'
-        }
-      });
+  physics.particles.forEach(function (particle) {
+    edit(byId(particle.id), {
+      style: {
+        left: particle.pos.x + 'px',
+        top: particle.pos.y + 'px'
+      }
     });
-  }
+  });
 
   // Calc delta between last and current frame start
   // + delta between frame start and frame end.

@@ -69,6 +69,23 @@ for (var i = 0; i < NUM_PARTICLES; i++) {
 // Set force to random location to begin with.
 updateForce(random(0, WIDTH - 10), random(0, HEIGHT - 10));
 
+on(containerEl, 'touchstart', function (event) {
+  // Prevent mouse events
+  event.preventDefault();
+  if (event.touches.length > 1) mouseRepulsion.setRadius(300);
+});
+
+on(containerEl, 'touchend', function (event) {
+  if (event.touches.length <= 1) mouseRepulsion.setRadius(200);
+});
+
+on(containerEl, 'touchmove', function (event) {
+  var touch = event.changedTouches[0];
+  if (touch) {
+    updateForce(touch.clientX, touch.clientY);
+  };
+});
+
 // @note Servo does not bubble events or dispatch to `window` or `document` yet.
 // Set listeners directly on element (in this case, `containerEl`).
 on(containerEl, 'mousemove', function (event) {

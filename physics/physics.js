@@ -101,5 +101,5 @@ loop(function (frames, currFrameT, prevFrameT, fps, averageFPS) {
 
   // Calc delta between last and current frame start
   // + delta between frame start and frame end.
-  text(fpsEl, 'Current FPS: ' + fps + ' Average FPS: ' + averageFPS);
+  text(fpsEl, 'AVG FPS: ' + averageFPS + ' FPS: ' + fps);
 });

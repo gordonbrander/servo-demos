@@ -11,23 +11,24 @@ function smooth(avg, curr, discount) {
 function loop(callback) {
   var next = true;
 
-  requestAnimationFrame(function () {
-    var avgFps;
-    var frames = 1;
-    var prevT = now();
+  var frames = 0;
+  // The sum of all frames per second.
+  var fpsSum = 0;
+  var prevT = now();
 
-    function tick() {
-      var currT = now();
-      var fps = 1000 / (currT - prevT);
-      avgFps = smooth(avgFps, fps, 0.03);
-      callback(frames, currT, prevT, Math.round(fps), Math.round(avgFps));
-      frames = frames + 1;
-      prevT = currT;
-      if (next) requestAnimationFrame(tick);
-    };
+  function tick() {
+    var currT = now();
+    var fps = 1000 / (currT - prevT);
+    fpsSum = fpsSum + fps;
+    avgFps = smooth(avgFps, fps, 0.03);
+    frames = frames + 1;
+    var avgFps = fpsSum / frames;
+    callback(frames, currT, prevT, Math.round(fps), Math.round(avgFps));
+    prevT = currT;
+    if (next) requestAnimationFrame(tick);
+  };
 
-    requestAnimationFrame(tick);
-  });
+  requestAnimationFrame(tick);
 
   return function () {
     return next = false;

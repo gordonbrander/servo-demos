@@ -135,11 +135,25 @@ function appends(parent, children) {
   return unit(children).reduce(append, parent);
 };
 
-function edit(element, attributes, children) {
-  // @TODO make sure old children don't stick around.
-  return appends(attr(element, attributes), children);
+function remove(parent, child) {
+  parent.removeChild(child);
+  return parent;
 };
 
-function el(tag, attributes, children) {
-  return edit(document.createElement(tag), attributes, children);
+function empty(parent) {
+  // Emptying from bottom to top makes for faster reflow.
+  while (parent.lastChild) remove(parent, parent.lastChild);
+  return parent;
+};
+
+function children(parent, childElements) {
+  return appends(parent.children.length ? empty(parent) : parent, childElements);
+};
+
+function edit(element, attributes, childElements) {
+  return children(attr(element, attributes), childElements);
+};
+
+function el(tag, attributes, childElements) {
+  return edit(document.createElement(tag), attributes, childElements);
 };

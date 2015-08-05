@@ -13,6 +13,7 @@ var COLORS = {
 var WIDTH = 1000;
 var HEIGHT = 1000;
 var NUM_PARTICLES = 1500;
+var FRAMESKIP = 2;
 
 // Create a physics instance which uses the Verlet integration method
 var physics = new Physics();
@@ -83,17 +84,20 @@ on(containerEl, 'mouseup', function (event) {
 });
 
 loop(function (frames, currFrameT, prevFrameT, fps, averageFPS) {
-  // Advance physics simulation.
-  physics.step();
+  // Skip every other frame and let CSS transitions do the tweening.
+  if (frames % FRAMESKIP == 0) {
+    // Advance physics simulation.
+    physics.step();
 
-  physics.particles.forEach(function (particle) {
-    edit(byId(particle.id), {
-      style: {
-        left: particle.pos.x + 'px',
-        top: particle.pos.y + 'px'
-      }
+    physics.particles.forEach(function (particle) {
+      edit(byId(particle.id), {
+        style: {
+          left: particle.pos.x + 'px',
+          top: particle.pos.y + 'px'
+        }
+      });
     });
-  });
+  };
 
   // Calc delta between last and current frame start
   // + delta between frame start and frame end.

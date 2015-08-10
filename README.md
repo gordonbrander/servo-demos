@@ -1,9 +1,8 @@
-# Physics demo
+# Servo demos
 
-Kick off the demo server:
+- https://gordonbrander.github.io/servo-demos/physics/
+- https://gordonbrander.github.io/servo-demos/evilad/
 
-    make run
+Open in Servo via:
 
-...then
-
-    ./mach run --release http://localhost:8000/physics/
+    ./mach run --release https://gordonbrander.github.io/servo-demos/{demo name}

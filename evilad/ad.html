@@ -86,6 +86,16 @@
       return state;
     }
 
+    function renderMonkey(id, state) {
+      return edit(byId(id), {
+        style: {
+          transform: 'translate('+ state.x + 'px, '+ state.y + 'px)',
+          // For older Android builds of Webkit
+          webkitTransform: 'translate('+ state.x + 'px, '+ state.y + 'px)'
+        }
+      });
+    }
+
     setTimeout(function forever() {
       var elems = [];
       for (var i = 0; i < 900; i++) {
@@ -106,40 +116,24 @@
     var monkey3 = {flip: false, y: 0};
     var monkey4 = {flip: false, y: 0};
     var monkey4x = {flip: false, y: 0};
-
     var frames = 0;
     setTimeout(function tickMonkey() {
       moveMonkey(monkey1, frames, 31, 10);
-      edit(byId('monkey1'), {
-        style: {
-          transform: 'translate('+ monkey1.x + 'px, '+ monkey1.y + 'px)'
-        }
-      });
+      renderMonkey('monkey1', monkey1);
 
       moveMonkey(monkey2, frames, 41, 11);
-      edit(byId('monkey2'), {
-        style: {
-          transform: 'translate('+ monkey2.x + 'px, '+ monkey2.y + 'px)'
-        }
-      });
+      renderMonkey('monkey2', monkey2);
 
       moveMonkey(monkey3, frames, 33, 13);
-      edit(byId('monkey3'), {
-        style: {
-          transform: 'translate('+ monkey3.x + 'px, '+ monkey3.y + 'px)'
-        }
-      });
+      renderMonkey('monkey3', monkey3);
+
 
       moveMonkey(monkey4, frames, 35, 9);
-      edit(byId('monkey4'), {
-        style: {
-          transform: 'translate('+ monkey4.x + 'px, '+ monkey4.y + 'px)'
-        }
-      });
+      renderMonkey('monkey4', monkey4);
 
       frames++;
       setTimeout(tickMonkey, 16);
-    }, 33);
+    }, 0);
     </script>
   </body>
 </html>
